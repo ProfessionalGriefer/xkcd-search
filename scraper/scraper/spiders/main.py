@@ -8,7 +8,7 @@ url = "https://xkcd.com"
 class MainSpider(scrapy.Spider):
     name = "main"
     allowed_domains = ["xkcd.com"]
-    start_urls = [f"{url}/{i}" for i in range(1, 2937)]
+    start_urls = [f"{url}/{i}/" for i in range(1, 2937)]
 
     def parse(self, response, **_):
         item = ComicItem()
