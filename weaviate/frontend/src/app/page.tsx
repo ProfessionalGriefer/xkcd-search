@@ -4,9 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
-import weaviate from 'weaviate-client';
+import weaviate from 'weaviate-ts-client';
 
 const client = weaviate.client({
   scheme: 'http',
@@ -14,9 +14,8 @@ const client = weaviate.client({
 });
 
 function App() {
-  const [results, setResults] = useState({});
+  const [results, setResults] = useState<any>({});
   const [searchTerm, setSearchTerm] = useState('');
-  const [showMore, setShowMore] = useState(false);
 
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     setSearchTerm(event.currentTarget.value);
@@ -24,6 +23,7 @@ function App() {
 
   const fetch = useCallback(() => {
     async function fetch() {
+      if (!client) return;
       const res = await client.graphql
         .get()
         .withClassName('MultiModal')
@@ -36,18 +36,19 @@ function App() {
     fetch();
   }, [searchTerm]);
 
-  const onSubmit = event => {
-    setShowMore(false)
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     fetch();
     event.preventDefault();
   };
 
-  const getResults = results => {
-    const head = results['data']['Get']['MultiModal'][0]
-    return <div>
-      <div>
-        <img
-          style={{ maxHeight: '400px' }}
+  const getResults = (results: any) => {
+    // if (!results) return;
+    const head = results['data']['Get']['MultiModal'][0];
+    if (head)
+      return <div className="flex items-center justify-center flex-col">
+        <Image
+          height={200}
+          width={800}
           alt="Certainty: "
           src={
             'data:image/jpg;base64,' +
@@ -56,18 +57,20 @@ function App() {
         />
         <div >Certainty: {(head['_additional']['certainty'] * 100).toFixed(2)} %</div>
       </div>
-    </div>
   }
 
-  const getRestResults = (results) => {
-    const [, ...rest] = results['data']['Get']['MultiModal']
+  const getRestResults = (results: any) => {
+    // if (!results) return;
+    const [, ...rest] = results['data']['Get']['MultiModal'];
+    // if (rest)
     return <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', paddingTop: "20px" }}>
       {
-        rest.map(obj => {
+        rest.map((obj: any) => {
           return (
             <div key={obj['_additional']['id']}>
-              <img
-                style={{ maxHeight: '200px' }}
+              <Image
+                height={5000}
+                width={400}
                 alt="Certainty: "
                 src={
                   'data:image/jpg;base64,' +
@@ -82,6 +85,7 @@ function App() {
     </div>
   }
 
+  // if (results?.data)
   return (
     <div className="container pt-8" >
       <h1 className="text-3xl font-bold">
@@ -98,6 +102,7 @@ function App() {
             onChange={onChange}
           />
           <Button
+            className="font-bold"
             type="submit"
             value="Search"
             style={{ backgroundColor: '#fa0171' }}
@@ -107,15 +112,8 @@ function App() {
       {results.data && getResults(results)}
       {results.data &&
         <div className="control" style={{ paddingTop: "20px" }}>
-          <Button
-            type="button"
-            onClick={() => setShowMore(!showMore)}
-            style={{ backgroundColor: '#fa0171' }}
-          >
-            {showMore ? "Show less" : "Show more"}
-          </Button>
         </div>}
-      {results.data && showMore && getRestResults(results)}
+      {results.data && getRestResults(results)}
       <div style={{ height: '50px' }} />
     </div>
   );

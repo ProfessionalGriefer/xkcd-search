@@ -1,9 +1,9 @@
 #!/bin/bash
 
 curl \
-    -X POST \
-    -H "Content-Type: application/json" \
-    -d '{
+	-X POST \
+	-H "Content-Type: application/json" \
+	-d '{
       "class": "MultiModal",
       "moduleConfig": {
           "multi2vec-clip": {
@@ -19,14 +19,16 @@ curl \
           "dataType": [
             "string"
           ],
-          "name": "filename"
+          "name": "filename",
+          "description": "filename of the image"
         },
         {
           "dataType": [
               "blob"
           ],
-          "name": "image"
+          "name": "image",
+          "description": "image"
         }
       ]
     }' \
-    http://localhost:8080/v1/schema
+	http://localhost:8080/v1/schema

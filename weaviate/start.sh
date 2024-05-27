@@ -58,4 +58,4 @@ if $run_go; then
 	import_with_go
 fi
 
-cd frontend && pnpm && pnpm start
+cd frontend && pnpm build && pnpm start

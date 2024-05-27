@@ -1,5 +1,5 @@
 {
-  "name": "search-website",
+  "name": "website",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -18,7 +18,7 @@
     "react-dom": "^18",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "weaviate-client": "^2.14.5"
+    "weaviate-ts-client": "^2.2.0"
   },
   "devDependencies": {
     "@types/node": "^20",
